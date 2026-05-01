@@ -17,7 +17,7 @@ export default function Dashboard() {
             try {
                 const res = await api.get("/me");
                 setUserName(res.data.name.split(" ")[0] || res.data.name);
-            } catch (err) {
+            } catch (_err) {
                 console.error("Failed to fetch user or token expired");
                 localStorage.removeItem("token");
                 navigate("/login");
