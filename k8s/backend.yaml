@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+data:
+  PORT: "3000"
+  CORS_ORIGIN: "http://localhost:5173" # This can be updated for production domain
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backend-secrets
+type: Opaque
+data:
+  # The values here should be base64 encoded strings in a real production environment
+  # e.g., echo -n 'your_secret' | base64
+  # For demonstration, these are placeholders that need to be populated
+  SECRET_KEY: "eW91cl9zZWNyZXRfa2V5X2hlcmU=" # 'your_secret_key_here'
+  MONGO_URL: "eW91cl9tb25nb2RiX3VybF9oZXJl" # 'your_mongodb_url_here'
+  WEATHER_API_KEY: "eW91cl93ZWF0aGVyX2FwaV9rZXlfaGVyZQ==" # 'your_weather_api_key_here'
+  DATA_GOV_API_KEY: "eW91cl9kYXRhX2dvdl9hcGlfa2V5X2hlcmU=" # 'your_data_gov_api_key_here'
+  GEMINI_API_KEY: "eW91cl9nZW1pbmlfYXBpX2tleV9oZXJl" # 'your_gemini_api_key_here'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: crop-backend
+        image: <your-dockerhub-username>/crop-backend:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - configMapRef:
+            name: backend-config
+        - secretRef:
+            name: backend-secrets
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: /test
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  selector:
+    app: backend
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000

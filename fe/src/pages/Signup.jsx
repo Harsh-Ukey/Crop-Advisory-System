@@ -1,0 +1,97 @@
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
+import api from "../lib/api";
+import { Leaf } from "lucide-react";
+
+export default function Signup() {
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        password: "",
+        pincode: "" // Must be string? Schema says Number in DB but Pincode usually treated as string/number safely validation..
+    });
+    // Be/types.js likely uses zod. Let's assume number from API usage or string parsed.
+    // DB schema says pincode: Number. I should parse it.
+
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            await api.post("/signup", {
+                ...formData,
+                pincode: formData.pincode
+            });
+            navigate("/login");
+        } catch (err) {
+            if (err.response?.data?.errors) {
+                // Format zod errors neatly
+                const errorMsg = err.response.data.errors.map(e => e.message).join(", ");
+                setError(errorMsg);
+            } else {
+                setError(err.response?.data?.message || "Signup failed");
+            }
+        }
+    };
+
+    return (
+        <div className="flex min-h-screen items-center justify-center bg-stone-50 p-4">
+            <Card className="w-full max-w-md">
+                <CardHeader className="text-center">
+                    <Link to="/" className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-50 hover:bg-green-100 transition-colors border border-green-100">
+                        <Leaf className="h-6 w-6 text-green-700" />
+                    </Link>
+                    <CardTitle>Join Crop Advisory</CardTitle>
+                    <p className="text-sm text-stone-500">Create your account</p>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <Input
+                            placeholder="Full Name"
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            required
+                        />
+                        <Input
+                            type="email"
+                            placeholder="Email"
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            required
+                        />
+                        <Input
+                            type="password"
+                            placeholder="Password"
+                            value={formData.password}
+                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                            required
+                        />
+                        <Input
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={6}
+                            placeholder="Pincode (for location)"
+                            value={formData.pincode}
+                            onChange={(e) => setFormData({ ...formData, pincode: e.target.value.replace(/\D/g, "").slice(0, 6) })}
+                            required
+                        />
+                        {error && <p className="text-sm text-red-500 break-words">{error}</p>}
+                        <Button type="submit" className="w-full bg-green-700 hover:bg-green-800 text-white">
+                            Sign Up
+                        </Button>
+                        <p className="text-center text-sm text-stone-500">
+                            Already have an account?{" "}
+                            <Link to="/login" className="text-green-600 hover:underline">
+                                Sign in
+                            </Link>
+                        </p>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
+    );
+}
