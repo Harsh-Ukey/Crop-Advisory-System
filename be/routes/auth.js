@@ -24,11 +24,12 @@ router.get("/me", middleware, async (req, res) => {
 });
 
 const authLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10,
-  message: { message: "Too many authentication attempts, please try again after an hour." },
+  windowMs: 15 * 60 * 1000, // 15 minutes (was 1 hour — shorter window = less painful lockout)
+  max: 20,                   // 20 attempts per 15 min per real IP (was 10 per hour)
+  message: { message: "Too many authentication attempts, please try again in 15 minutes." },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
+  skipSuccessfulRequests: true // successful logins don't count against the limit
 });
 
 const getLocationFromPincode = async (pincode) => {

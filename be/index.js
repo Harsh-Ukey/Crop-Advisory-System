@@ -24,6 +24,11 @@ import authRoutes from "./routes/auth.js";
 
 const app = express();
 
+// CRITICAL: Tell Express to trust the reverse proxy (Render/Vercel).
+// Without this, ALL users appear to share the same IP (the proxy's IP),
+// causing one user's rate limit to block everyone else.
+app.set("trust proxy", 1);
+
 app.get("/test", (req, res) => {
   res.json({ message: "Backend is alive and healthy! 🛸" });
 });
@@ -51,7 +56,7 @@ app.use(helmet());
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
+  max: 500, // generous limit per real user IP
   message: { message: "Too many requests from this IP, please try again later." },
   standardHeaders: true,
   legacyHeaders: false
