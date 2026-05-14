@@ -73,14 +73,23 @@ router.post("/signup", authLimiter, async (req, res) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   const { city, state } = await getLocationFromPincode(pincode);
 
-  await User.create({
-    name,
-    email,
-    password: hashedPassword,
-    city,
-    state,
-    pincode
-  });
+  try {
+    await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      city,
+      state,
+      pincode
+    });
+  } catch (dbError) {
+    // Handle duplicate key (race condition where two requests pass findOne simultaneously)
+    if (dbError.code === 11000) {
+      return res.status(409).json({ message: "User already exists" });
+    }
+    console.error("DB error during user creation:", dbError.message);
+    return res.status(500).json({ message: "Failed to create user. Please try again." });
+  }
 
   res.status(201).json({ message: "User created successfully" });
 });
