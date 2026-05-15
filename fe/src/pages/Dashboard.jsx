@@ -7,10 +7,12 @@ import { Advisory } from "../components/Advisory";
 import { PriceChecker } from "../components/PriceChecker";
 import { ChatBot } from "../components/ChatBot";
 import api from "../lib/api";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function Dashboard() {
     const navigate = useNavigate();
     const [userName, setUserName] = useState("Farmer");
+    const { t } = useLanguage();
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -41,12 +43,12 @@ export default function Dashboard() {
                         <div className="bg-green-100 p-2 rounded-lg">
                             <Leaf className="h-5 w-5" />
                         </div>
-                        Kisan Sahayak
+                        {t("brandName")}
                     </div>
                     <div className="flex items-center gap-4">
-                        <span className="hidden sm:inline-block text-sm text-stone-500">Welcome, {userName}</span>
+                        <span className="hidden sm:inline-block text-sm text-stone-500">{t("welcomeUser", { name: userName })}</span>
                         <Button variant="ghost" size="sm" onClick={handleLogout}>
-                            <LogOut className="h-4 w-4 mr-2" /> Logout
+                            <LogOut className="h-4 w-4 mr-2" /> {t("logout")}
                         </Button>
                     </div>
                 </div>
@@ -57,10 +59,10 @@ export default function Dashboard() {
                 <section className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-2 space-y-6 flex flex-col justify-center">
                         <h1 className="text-4xl md:text-5xl font-extrabold text-stone-900 tracking-tight">
-                            Smart Farming for a <span className="text-green-600">Better Future</span>
+                            {t("heroTitle1")}<span className="text-green-600">{t("heroTitle2")}</span>
                         </h1>
                         <p className="text-lg text-stone-600 max-w-xl leading-relaxed">
-                            Get real-time weather updates, crop recommendations, and live mandi prices to maximize your profits.
+                            {t("heroDesc")}
                         </p>
                     </div>
                     <div className="lg:col-span-1">
@@ -87,8 +89,8 @@ export default function Dashboard() {
             </main>
 
             <footer className="mt-12 py-8 bg-white border-t border-stone-100 text-center text-stone-500 text-sm flex flex-col items-center gap-2">
-                <p>© 2025 Kisan Sahayak. Empowering Farmers.</p>
-                <Link to="/about" className="text-green-600 hover:underline">About Us</Link>
+                <p>© 2025 {t("brandName")}. {t("footerEmpowering")}</p>
+                <Link to="/about" className="text-green-600 hover:underline">{t("aboutUs")}</Link>
             </footer>
         </div>
     );

@@ -3,15 +3,20 @@ import { MessageCircle, X, Send, Bot } from 'lucide-react';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
 import api from '../lib/api';
+import { useLanguage } from '../context/LanguageContext';
 
 export function ChatBot() {
+    const { t, language, currentLanguageObj } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState([
-        { text: "Namaste! I am Kisan Sahayak AI. Ask me anything about your crops.", isUser: false }
-    ]);
+    const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef(null);
+
+    // Set initial greeting when language changes
+    useEffect(() => {
+        setMessages([{ text: t("botGreeting"), isUser: false }]);
+    }, [language, t]);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -31,7 +36,10 @@ export function ChatBot() {
         setIsLoading(true);
 
         try {
-            const res = await api.post('/gemini', { message: userMessage });
+            const res = await api.post('/gemini', { 
+                message: userMessage, 
+                languageName: currentLanguageObj.name 
+            });
             const botMessage = res.data.reply;
             setMessages(prev => [...prev, { text: botMessage, isUser: false }]);
         } catch (error) {
@@ -99,7 +107,7 @@ export function ChatBot() {
                         <Input
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
-                            placeholder="Ask about fertilizer, pests..."
+                            placeholder={t("botPlaceholder")}
                             className="flex-1 focus-visible:ring-green-500"
                             disabled={isLoading}
                         />

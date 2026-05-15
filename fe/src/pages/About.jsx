@@ -7,8 +7,7 @@ import { Button } from "../components/ui/Button";
 export default function About() {
     const team = [
         { name: "Jatin", role: "Lead Developer", quote: "Innovating for farmers." },
-        { name: "Monish", role: "Frontend Architect", quote: "Designing with empathy." },
-        { name: "Hemant", role: "Backend Specialist", quote: "Powering the platform." }
+        { name: "Harsh", role: "DevOps Engineer", quote: "Deploying dreams, one pipeline at a time." }
     ];
 
     return (
@@ -42,7 +41,7 @@ export default function About() {
                         <h2 className="text-2xl font-bold text-stone-800">Meet the Team</h2>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
                         {team.map((member, idx) => (
                             <Card key={idx} className="text-center hover:shadow-lg transition-all duration-300 border-none bg-white shadow-md">
                                 <CardContent className="pt-8 pb-8">

@@ -13,7 +13,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 router.post("/", middleware, async (req, res) => {
     console.log(`🤖 Gemini request received: "${req.body.message?.substring(0, 30)}..."`);
-    const { message } = req.body;
+    const { message, languageName } = req.body;
 
     if (!message) {
         return res.status(400).json({ message: "Message is required" });
@@ -21,12 +21,17 @@ router.post("/", middleware, async (req, res) => {
 
     try {
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+        
+        const langInstruction = languageName && languageName !== "English" 
+            ? `\nIMPORTANT: You must reply in ${languageName} language. Do not reply in English.` 
+            : "";
 
         const prompt = `
       You are an expert agricultural consultant named 'Kisan Sahayak AI'. 
       Your goal is to help Indian farmers with practical, scientific, and sustainable farming advice.
       
       User Query: "${message}"
+      ${langInstruction}
       
       Guidelines:
       1. Keep answers concise (under 150 words) unless detailed explanation is requested.
