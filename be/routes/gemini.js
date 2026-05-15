@@ -51,7 +51,7 @@ router.post("/", middleware, async (req, res) => {
         if (error.message.includes("leaked")) {
             return res.status(403).json({ message: "API Key reported as leaked. Please update GEMINI_API_KEY in .env." });
         }
-        res.status(500).json({ message: "AI is currently busy. Please try again later." });
+        res.status(500).json({ message: `AI Error: ${error.message}` });
     }
 });
 
