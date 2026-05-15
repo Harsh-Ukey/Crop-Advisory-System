@@ -14,7 +14,9 @@ export function ChatBot() {
     const messagesEndRef = useRef(null);
 
     // Set initial greeting when language changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => {
+        // eslint-disable-next-line
         setMessages([{ text: t("botGreeting"), isUser: false }]);
     }, [language, t]);
 
