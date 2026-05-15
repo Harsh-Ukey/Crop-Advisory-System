@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { Cloud, Droplets, Wind, MapPin, Info } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/Card";
 import api from "../lib/api";
+import { useLanguage } from "../context/LanguageContext";
 
 export function WeatherWidget() {
+    const { t } = useLanguage();
     const [weather, setWeather] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -13,7 +15,7 @@ export function WeatherWidget() {
             .then(res => setWeather(res.data))
             .catch(err => {
                 console.error("Weather fetch error", err);
-                let errorMessage = "Failed to load weather data";
+                let errorMessage = t("weatherUnavailable");
                 if (err.response?.data?.message) {
                     errorMessage = err.response.data.message;
                 } else if (err.request) {
@@ -22,17 +24,17 @@ export function WeatherWidget() {
                 setError(errorMessage);
             })
             .finally(() => setLoading(false));
-    }, []);
+    }, [t]);
 
-    if (loading) return <div className="h-48 animate-pulse rounded-xl bg-stone-200"></div>;
+    if (loading) return <div className="h-[220px] animate-pulse rounded-3xl bg-gradient-to-br from-stone-200 to-stone-300 shadow-sm"></div>;
 
     if (error) {
         return (
-            <Card className="bg-red-50 border-red-200 shadow-sm h-48 flex items-center justify-center">
+            <Card className="bg-gradient-to-br from-red-50 to-rose-100 border-none shadow-sm h-[220px] flex items-center justify-center rounded-3xl">
                 <CardContent className="text-center p-6">
-                    <Cloud className="h-12 w-12 text-red-400 mx-auto mb-2" />
-                    <p className="text-red-700 font-medium mb-1">Weather Unavailable</p>
-                    <p className="text-red-500 text-sm">{error}</p>
+                    <Cloud className="h-12 w-12 text-rose-400 mx-auto mb-3 opacity-80" />
+                    <p className="text-rose-800 font-bold mb-1 tracking-tight">{t("weatherUnavailable")}</p>
+                    <p className="text-rose-600/80 text-sm font-medium">{error}</p>
                 </CardContent>
             </Card>
         );
@@ -41,37 +43,48 @@ export function WeatherWidget() {
     if (!weather) return null;
 
     return (
-        <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-none shadow-lg relative">
+        <Card className="bg-gradient-to-br from-sky-400 via-blue-500 to-indigo-600 text-white border-none shadow-xl shadow-blue-900/20 relative overflow-hidden rounded-3xl group">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-700" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-900/20 rounded-tr-full -z-10 blur-xl" />
+            
             {(weather.isFallback || weather.isCached) && (
-                <div className="absolute top-2 right-2 flex items-center gap-1 text-xs bg-black/20 px-2 py-1 rounded-full backdrop-blur-md" title={weather.isFallback ? "Estimated data due to API limits" : "Cached data"}>
+                <div className="absolute top-3 right-3 flex items-center gap-1.5 text-[10px] uppercase font-bold tracking-wider bg-black/20 px-2.5 py-1 rounded-full backdrop-blur-md shadow-inner border border-white/10" title={weather.isFallback ? "Estimated data due to API limits" : "Cached data"}>
                     <Info className="h-3 w-3" />
-                    <span>{weather.isFallback ? "Estimated" : "Cached"}</span>
+                    <span>{weather.isFallback ? t("estimated") : t("cached")}</span>
                 </div>
             )}
-            <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl flex items-center gap-2">
-                        <MapPin className="h-5 w-5" /> {weather.name}
+            <CardHeader className="pb-0 pt-5 px-6">
+                <div className="flex flex-col">
+                    <CardTitle className="text-xl font-bold flex items-center gap-2 tracking-tight drop-shadow-md">
+                        <MapPin className="h-5 w-5 opacity-90" /> {weather.name}
                     </CardTitle>
-                    <span className="text-sm opacity-90 capitalize mt-4">{weather.weather[0].description}</span>
+                    <span className="text-sm font-medium text-sky-100 capitalize mt-1 drop-shadow-sm">{weather.weather[0].description}</span>
                 </div>
             </CardHeader>
-            <CardContent>
-                <div className="flex items-end justify-between mt-2">
+            <CardContent className="px-6 pb-6 pt-2">
+                <div className="flex items-end justify-between mt-2 relative z-10">
                     <div>
-                        <div className="text-6xl font-bold">{Math.round(weather.main.temp)}°</div>
-                        <div className="text-blue-100 mt-1">
-                            H: {Math.round(weather.main.temp_max || weather.main.temp + 2)}° L: {Math.round(weather.main.temp_min || weather.main.temp - 2)}°
+                        <div className="text-6xl font-black tracking-tighter drop-shadow-lg">{Math.round(weather.main.temp)}°</div>
+                        <div className="text-sky-100 font-medium text-sm mt-1 bg-black/10 w-fit px-2 py-0.5 rounded backdrop-blur-sm">
+                            H: {Math.round(weather.main.temp_max || weather.main.temp + 2)}° <span className="mx-1 opacity-50">|</span> L: {Math.round(weather.main.temp_min || weather.main.temp - 2)}°
                         </div>
                     </div>
-                    <Cloud className="h-16 w-16 opacity-80" />
+                    <Cloud className="h-20 w-20 text-white/90 drop-shadow-xl translate-y-2 group-hover:-translate-y-1 transition-transform duration-500" />
                 </div>
-                <div className="mt-6 grid grid-cols-2 gap-4 text-sm font-medium">
-                    <div className="flex items-center gap-2 rounded-lg bg-white/20 p-2 backdrop-blur-sm">
-                        <Droplets className="h-4 w-4" /> Humidity: {weather.main.humidity}%
+                <div className="mt-6 grid grid-cols-2 gap-3 text-sm font-bold tracking-wide">
+                    <div className="flex items-center gap-2.5 rounded-xl bg-white/10 p-3 backdrop-blur-md border border-white/20 shadow-inner group-hover:bg-white/15 transition-colors">
+                        <Droplets className="h-4 w-4 text-sky-200" /> 
+                        <div>
+                            <div className="text-[10px] text-sky-200 uppercase font-black">{t("humidity")}</div>
+                            <div className="text-base drop-shadow-sm">{weather.main.humidity}%</div>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2 rounded-lg bg-white/20 p-2 backdrop-blur-sm">
-                        <Wind className="h-4 w-4" /> Wind: {weather.wind.speed} m/s
+                    <div className="flex items-center gap-2.5 rounded-xl bg-white/10 p-3 backdrop-blur-md border border-white/20 shadow-inner group-hover:bg-white/15 transition-colors">
+                        <Wind className="h-4 w-4 text-sky-200" /> 
+                        <div>
+                            <div className="text-[10px] text-sky-200 uppercase font-black">{t("wind")}</div>
+                            <div className="text-base drop-shadow-sm">{weather.wind.speed} m/s</div>
+                        </div>
                     </div>
                 </div>
             </CardContent>
