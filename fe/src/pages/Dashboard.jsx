@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { LogOut, Leaf } from "lucide-react";
+import { LogOut, Leaf, ShoppingBag } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import { WeatherWidget } from "../components/WeatherWidget";
 import { Advisory } from "../components/Advisory";
@@ -8,6 +8,7 @@ import { PriceChecker } from "../components/PriceChecker";
 import { ChatBot } from "../components/ChatBot";
 import api from "../lib/api";
 import { useLanguage } from "../context/LanguageContext";
+import { LanguageSelector } from "../components/LanguageSelector";
 
 export default function Dashboard() {
     const navigate = useNavigate();
@@ -40,18 +41,25 @@ export default function Dashboard() {
             {/* Header */}
             <header className="sticky top-0 z-50 w-full border-b border-emerald-100/50 bg-white/70 backdrop-blur-xl shadow-sm">
                 <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                    <div className="flex items-center gap-3 font-black text-xl text-stone-800 tracking-tight drop-shadow-sm">
+                    <Link to="/dashboard" className="flex items-center gap-3 font-black text-xl text-stone-800 tracking-tight drop-shadow-sm">
                         <div className="bg-gradient-to-br from-emerald-400 to-teal-500 p-2 rounded-xl shadow-inner border border-emerald-300">
                             <Leaf className="h-5 w-5 text-white drop-shadow-sm" />
                         </div>
                         {t("brandName")}
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <span className="hidden sm:inline-block text-sm font-bold text-stone-600 bg-stone-100/80 px-3 py-1.5 rounded-full border border-stone-200/60 shadow-inner">
+                    </Link>
+                    <div className="flex items-center gap-2 sm:gap-4">
+                        <LanguageSelector />
+                        <Link to="/shop">
+                            <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl shadow-md border-none font-bold text-sm px-3.5 py-1.5 flex items-center gap-1.5">
+                                <ShoppingBag className="h-4 w-4" />
+                                <span className="hidden md:inline">{t("navShop") || "Shop"}</span>
+                            </Button>
+                        </Link>
+                        <span className="hidden lg:inline-block text-sm font-bold text-stone-600 bg-stone-100/80 px-3 py-1.5 rounded-full border border-stone-200/60 shadow-inner">
                             {t("welcomeUser", { name: userName })}
                         </span>
                         <Button variant="ghost" size="sm" onClick={handleLogout} className="font-bold text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-xl transition-colors">
-                            <LogOut className="h-4 w-4 mr-2" /> {t("logout")}
+                            <LogOut className="h-4 w-4 md:mr-2" /> <span className="hidden md:inline">{t("logout")}</span>
                         </Button>
                     </div>
                 </div>

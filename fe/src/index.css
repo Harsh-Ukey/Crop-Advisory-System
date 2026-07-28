@@ -1,11 +1,36 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #16a34a;
-  --color-secondary: #ca8a04;
+  --color-primary: #10b981;
+  --color-secondary: #f59e0b;
   --color-dark: #1c1917;
 }
 
 body {
   @apply bg-stone-50 text-stone-900 font-sans;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Hide Google Translate top banner and default styling */
+.goog-te-banner-frame {
+  display: none !important;
+}
+body {
+  top: 0 !important;
+}
+.goog-te-combo {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  outline: none;
+  font-family: inherit;
+  font-weight: 600;
+  color: #065f46;
+  background-color: #f0fdf4;
+}
+.goog-logo-link {
+  display: none !important;
+}
+.goog-te-gadget {
+  color: transparent !important;
 }

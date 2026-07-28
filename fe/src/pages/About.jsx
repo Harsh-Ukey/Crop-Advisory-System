@@ -3,6 +3,7 @@ import { ArrowLeft, Mail, Users, Leaf } from "lucide-react";
 import { Card, CardContent } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
 import { useLanguage } from "../context/LanguageContext";
+import { LanguageSelector } from "../components/LanguageSelector";
 
 export default function About() {
     const { t } = useLanguage();
@@ -16,10 +17,11 @@ export default function About() {
         <div className="min-h-screen bg-gradient-to-b from-stone-50 via-emerald-50/30 to-stone-100 font-sans">
             {/* Header for navigation back */}
             <header className="sticky top-0 z-50 w-full border-b border-emerald-100/50 bg-white/70 backdrop-blur-xl shadow-sm">
-                <div className="container mx-auto flex h-16 items-center px-4">
+                <div className="container mx-auto flex h-16 items-center justify-between px-4">
                     <Link to="/" className="flex items-center text-stone-600 hover:text-emerald-700 transition-colors font-semibold">
                         <ArrowLeft className="h-5 w-5 mr-2" /> Back to Home
                     </Link>
+                    <LanguageSelector />
                 </div>
             </header>
 

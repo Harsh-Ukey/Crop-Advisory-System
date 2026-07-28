@@ -38,7 +38,7 @@ export default function Signup() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-emerald-50 via-teal-50 to-emerald-100 p-4">
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-emerald-50 via-teal-50 to-emerald-100 p-4 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-300 rounded-full blur-[120px] opacity-40 mix-blend-multiply" />
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-teal-300 rounded-full blur-[120px] opacity-40 mix-blend-multiply" />
             

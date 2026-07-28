@@ -20,7 +20,7 @@ router.post("/", middleware, async (req, res) => {
     }
 
     try {
-        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
         
         const langInstruction = languageName && languageName !== "English" 
             ? `\nIMPORTANT: You must reply in ${languageName} language. Do not reply in English.` 

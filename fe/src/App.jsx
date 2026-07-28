@@ -5,6 +5,7 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Landing from "./pages/Landing";
 import About from "./pages/About";
+import Shop from "./pages/Shop";
 import { LanguageProvider } from "./context/LanguageContext";
 
 function ProtectedRoute({ children }) {
@@ -25,6 +26,11 @@ function App() {
           <Route path="/dashboard" element={
             <ProtectedRoute>
               <Dashboard />
+            </ProtectedRoute>
+          } />
+          <Route path="/shop" element={
+            <ProtectedRoute>
+              <Shop />
             </ProtectedRoute>
           } />
         </Routes>

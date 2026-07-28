@@ -6,15 +6,15 @@ import {
     MessageSquare,
     ArrowRight,
     ShieldCheck,
-    Zap,
-    Globe
+    Zap
 } from "lucide-react";
 import { Button } from "../components/ui/Button";
 import { Card, CardContent } from "../components/ui/Card";
-import { useLanguage, LANGUAGES } from "../context/LanguageContext";
+import { useLanguage } from "../context/LanguageContext";
+import { LanguageSelector } from "../components/LanguageSelector";
 
 export default function Landing() {
-    const { t, language, setLanguage } = useLanguage();
+    const { t } = useLanguage();
 
     const features = [
         {
@@ -48,24 +48,11 @@ export default function Landing() {
                         <Leaf className="h-8 w-8 text-emerald-600" />
                         <span>{t("brandName")}</span>
                     </div>
-                    <div className="hidden md:flex items-center gap-6 font-medium">
-                        <div className="flex items-center gap-1.5 bg-white/50 px-3 py-1.5 rounded-full border border-emerald-100 shadow-sm hover:shadow-md transition-shadow">
-                            <Globe className="h-4 w-4 text-emerald-600" />
-                            <select 
-                                value={language} 
-                                onChange={(e) => setLanguage(e.target.value)}
-                                className="bg-transparent text-sm font-semibold text-emerald-900 outline-none cursor-pointer w-full"
-                            >
-                                {LANGUAGES.map(lang => (
-                                    <option key={lang.code} value={lang.code}>
-                                        {lang.nativeName}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <a href="#features" className="hover:text-emerald-600 transition-colors">{t("navFeatures")}</a>
-                        <Link to="/about" className="hover:text-emerald-600 transition-colors">{t("navAbout")}</Link>
-                        <Link to="/login">
+                    <div className="flex items-center gap-4 md:gap-6 font-medium">
+                        <LanguageSelector />
+                        <a href="#features" className="hidden md:inline hover:text-emerald-600 transition-colors">{t("navFeatures")}</a>
+                        <Link to="/about" className="hidden md:inline hover:text-emerald-600 transition-colors">{t("navAbout")}</Link>
+                        <Link to="/login" className="hidden sm:inline">
                             <Button variant="ghost" className="text-stone-700 hover:text-emerald-800 hover:bg-emerald-100/50">{t("navLogin")}</Button>
                         </Link>
                         <Link to="/signup">
